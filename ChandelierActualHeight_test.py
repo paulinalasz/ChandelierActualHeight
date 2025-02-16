@@ -1,16 +1,47 @@
 import pytest
 from datetime import date, datetime, timedelta
-from ChandelierActualHeight import convert_to_actual_movement_time, convert_to_actual_movement_times
+from ChandelierActualHeight import find_time_delta_each_side_of_hour, convert_to_actual_movement_time, convert_to_actual_movement_times
+
+@pytest.mark.parametrize(
+    "previous_row, current_row, expected_time",
+    [
+        #Test case format: (previous_row, current_row, expected_time)
+        (   # Standard test case
+            [datetime(2025, 1, 1, 1, 0, 0), 10], 
+            [datetime(2025, 1, 1, 2, 0, 0), 15], 
+            timedelta(seconds=150)
+        ),
+        (   # small difference
+            [datetime(2025, 1, 1, 1, 0, 0), 1], 
+            [datetime(2025, 1, 1, 2, 0, 0), 2], 
+            timedelta(seconds=30)
+        ),
+        (   # no difference
+            [datetime(2025, 1, 1, 1, 0, 0), 0], 
+            [datetime(2025, 1, 1, 2, 0, 0), 0], 
+            timedelta(seconds=0)
+        ),
+        (   # large difference
+            [datetime(2025, 1, 1, 1, 0, 0), 10], 
+            [datetime(2025, 1, 1, 2, 0, 0), 120], 
+            timedelta(seconds=3300)
+        ),
+        (   # very large difference
+            [datetime(2025, 1, 1, 1, 0, 0), 10], 
+            [datetime(2025, 1, 1, 2, 0, 0), 10000], 
+            timedelta(seconds=299700)
+        )
+    ]
+)
+
+def test_find_time_delta_each_side_of_hour(previous_row, current_row, expected_time):
+    time = find_time_delta_each_side_of_hour(previous_row, current_row)
+    
+    assert time == expected_time
 
 @pytest.mark.parametrize(
     "previous_row, current_row, expected_output",
     [
-        #normal test
-        #cahnging days
-        #height is the same so no diff
-        #really small height change
-        #really big height change
-
         #Test case format: (previous_row, current_row, expected_output)
         (   # Standard test case
             [datetime(2025, 1, 1, 1, 0, 0), 10], 
@@ -46,7 +77,7 @@ def test_convert_to_actual_movement_time(previous_row, current_row, expected_out
 @pytest.mark.parametrize(
     "schedule, expected_output",
     [
-        #Test case format: (previous_row, current_row, expected_output)
+        #Test case format: (schedule, expected_output)
         (   # Standard test case
             [[datetime(2025, 1, 1, 1, 0, 0), 10], 
             [datetime(2025, 1, 1, 2, 0, 0), 15], 
