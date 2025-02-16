@@ -40,7 +40,7 @@ def convert_to_actual_movement_time(previous_row, current_row):
 def convert_to_actual_movement_times(schedule):
     output = []
 
-    for i in range(len(schedule)-1):
+    for i in range(len(schedule)):
         # we assume that the first input is the chandeliers current position
         if i==0: 
             output.append(schedule[i])
