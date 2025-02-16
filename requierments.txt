@@ -1,0 +1,16 @@
+Requirements: 
+schedule.csv must be located in the same directory as ChandelierActualHeight.py
+output.csv will also be located in the same directory. 
+
+assumptions made:
+I do not know the range of heights that the chandelier can be at. 
+In theory, if there was more than a cumulative 60 meter change over two time entries then this code would not work, and it would
+create outputs that can't have actually happened. We can make assumptions about how the chandelier would interpret such a schedule.
+Maybe it would move as much as possible, before having its input be overridden by the next command. But what if the input it more than 120? 
+It is impossible to complete this code without knowing how the chandelier would behave in such scenarios.
+
+This of course only applies if the ceiling is very tall. It is likely that the chandelier cannot be higher than 30 meters, in which case this is not an issue.
+
+I would propose adding the necessary validation needed to the input schedule, so that heights that cannot be achieved cannot be input.
+Either by adding a maximum height for the ceiling, or if the maximum height is more than 30, add validation logic that ensures that each schedule input
+will be finished before the next one has to begin. 
