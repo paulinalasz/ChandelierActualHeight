@@ -26,13 +26,15 @@ def write_output(file_path, output):
         for row in output:
             writer.writerow([row[0].isoformat().replace("+00:00", "Z"), row[1]])
 
-def convert_to_actual_movement_time(previous_row, current_row):
+def find_time_delta_each_side_of_hour(previous_row, current_row):
     distance_to_move = abs(previous_row[1] - current_row[1])
     time_taken_to_move = distance_to_move/MOTOR_SPEED
-    time_each_side_of_hour = timedelta(minutes=time_taken_to_move/2);
+    return timedelta(minutes=time_taken_to_move/2);
 
-    output = [[current_row[0] - time_each_side_of_hour, previous_row[1]],
-              [current_row[0] + time_each_side_of_hour, current_row[1]]]
+def convert_to_actual_movement_time(previous_row, current_row):
+    time_each_side_of_hour = find_time_delta_each_side_of_hour(previous_row, current_row)
+    output = [[current_row[0] - time_each_side_of_hour, previous_row[1]], # Time and height when Chandelier starts moving
+              [current_row[0] + time_each_side_of_hour, current_row[1]]]  # Time and height when Chandelier stops moving
 
     return output
 
@@ -40,7 +42,7 @@ def convert_to_actual_movement_time(previous_row, current_row):
 def convert_to_actual_movement_times(schedule):
     output = []
 
-    for i in range(len(schedule)-1):
+    for i in range(len(schedule)):
         # we assume that the first input is the chandeliers current position
         if i==0: 
             output.append(schedule[i])
